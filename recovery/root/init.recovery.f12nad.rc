@@ -1,0 +1,16 @@
+on boot
+    insmod /modules/nv_write.ko
+
+on init
+    export LD_LIBRARY_PATH /vendor/lib:/system/lib
+
+on emmc-fs
+    wait /dev/block/mmcblk0p13
+    mount ext4 /dev/block/mmcblk0p13 /system ro barrier=1
+
+service rmt_storage /system/bin/rmt_storage
+    user root
+    disabled
+
+on property:ro.emmc=1
+    start rmt_storage
